@@ -1,0 +1,25 @@
+{
+    "name": "burdock/php-chainable",
+    "description": "loading configuration from json/yaml/toml file",
+    "type": "library",
+    "require": {
+        "psr/log": "^1.1"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Hiraku Saito",
+            "email": "ittun55@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Burdock\\Chainable\\": "src/Chainable"
+        }
+    },
+    "require-dev": {
+        "monolog/monolog": "^2.0",
+        "burdock/php-config": "^0.0.1",
+        "phpunit/phpunit": "^8.3"
+    }
+}
