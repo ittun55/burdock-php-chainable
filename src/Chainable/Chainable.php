@@ -11,7 +11,7 @@ class Chainable
     private $_logger = null;
     private $_errors = null;
 
-    public function __construct($value, ?LoggerInterface $logger=null, array $errors=[])
+    public function __construct($value=null, ?LoggerInterface $logger=null, array $errors=[])
     {
         $this->_value = $value;
         $this->_logger = (is_null($logger)) ? new NullLogger() : $logger;
