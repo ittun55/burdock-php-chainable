@@ -66,11 +66,52 @@ class ChainableTest extends TestCase
         $c->getValue('.abc[2].abc');
     }
 
+    public $instance_value = 10;
+    public function instance_sum(): callable
+    {
+        $a = $this->instance_value;
+        return function($b) use ($a) {
+            return $a + $b;
+        };
+    }
+
+    public function instance_sum_alt($a, $b): int
+    {
+        return $a + $b;
+    }
+
     public function test_for_instance_method(): void
     {
         $kv = ['xyz' => 'XYZ', 'abc' => 'ABC'];
-        $chain = (new Chainable(new Config($kv), $this->logger))
+        $c1 = (new Chainable(new Config($kv), $this->logger))
             ->process('call instance method', function($cfg) { return $cfg->getValue('abc'); });
-        $this->assertEquals('ABC', $chain->getValue());
+        $this->assertEquals('ABC', $c1->getValue());
+        $c2 = (new Chainable(0, $this->logger))
+            ->process('call instance method 1', $this->instance_sum())
+            ->process('call instance method 2', [$this, 'instance_sum_alt'], 5);
+        $this->assertEquals(15, $c2->getValue());
+    }
+
+    public static function sum($a): callable
+    {
+        return function($b) use ($a) {
+            return $a + $b;
+        };
+    }
+
+    public static function sum_alt($a, $b): int
+    {
+        return $a + $b;
+    }
+
+    public function test_for_static_method(): void
+    {
+        $c1 = (new Burdock\Chainable\Chainable(1, $this->logger))
+            ->process('call static method', self::sum(2));
+        $this->assertEquals(3, $c1->getValue());
+        $c2 = $c1->process('call static method another way', [__CLASS__, 'sum_alt'], 3)
+            ->process('call static method alternatively', ['ChainableTest', 'sum_alt'], 4)
+            ->process('call static method ', 'ChainableTest::sum_alt', 5);
+        $this->assertEquals(15, $c2->getValue());
     }
 }

@@ -21,6 +21,19 @@ class Chainable
     const PROCESS_FAILED_MSG  = '    The process was failed.';
     const PROCESS_SKIPPED_MSG = '    The process was skipped because previous process was failed.';
 
+    /**
+     * 実行したい処理を呼び出す
+     *
+     * callable $func 部分は ['Class', 'method'] などでも呼び出しができ、$name を代替できそうだが、
+     * 無名関数を指定したい場合や、インスタンスメソッドの指定時にログに処理の概要を出力できなくなるため、
+     * $name はそのまま残すことにした。
+     * いろいろな callable の呼び出し方は、テストを参照。
+     *
+     * @param string $name
+     * @param callable $func
+     * @param mixed ...$args
+     * @return Chainable
+     */
     public function process(string $name, Callable $func, ...$args) : Chainable
     {
         $this->_logger->info($name);
